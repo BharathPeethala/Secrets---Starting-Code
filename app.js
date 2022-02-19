@@ -3,6 +3,7 @@ const express = new require("express");
 const ejs = new require("ejs");
 const bodyParser = new require("body-parser");
 const mongoose = new require("mongoose");
+const encrypt = new require("mongoose-encryption");
 const app = new express();
 
 app.set("view engine", "ejs");
@@ -20,12 +21,13 @@ mongoose
 	});
 
 // Model and schema creation
-const userSchema = {
+const userSchema = new mongoose.Schema({
 	email: String,
 	password: String,
-};
-const User = mongoose.model("User", userSchema);
-
+});
+let secret = "nakdanienfcaoienrkaljlkienak";
+userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
+User = mongoose.model("User", userSchema);
 // Requests
 app.route("/").get((req, res) => {
 	res.render("home");
